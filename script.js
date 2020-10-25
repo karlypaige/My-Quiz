@@ -76,61 +76,59 @@ function startTimer() {
     if(totalSeconds <= 0) {
         clearInterval(timerInterval);
         timerFlag = false;
+        endQuiz();
     };
 
     //display time left
     sectionHeader.innerHTML = totalSeconds;
 
     }, 1000);
-
-    //start quiz
-    if(timerFlag == true){      //if timer is still running
-        //for(var i=0; i<Object.keys(questions).length; i++) {
-            answer = setQuestion(0);
-            if (userAnswer){
-            console.log("answer is " + answer + " and userAnswer is " + userAnswer);
-            checkAnswer(answer, userAnswer);
-            }
-        //}
-    }
-    else {
-        endQuiz();
-    };
 };
 
-
-
 function setQuestion(loopNum){
+    console.log("we are here");
     sectionTitle.textContent = Object.keys(questions)[loopNum];
-
+    console.log("we are here " + Object.keys(questions)[loopNum]);
     // console.log("button1 = " + button1.textContent)
     button1.textContent = Object.values(questions)[loopNum][0];
     button2.textContent = Object.values(questions)[loopNum][1];
     button3.textContent = Object.values(questions)[loopNum][2];
     button4.textContent = Object.values(questions)[loopNum][3];
 
+    clickFlag = true;
     //store correct answer
+    console.log("we are here " + Object.values(questions)[loopNum][4]);
+    console.log("we are here " + loopNum);
+    console.log("we are here " + button2.textContent);
     return Object.values(questions)[loopNum][4];
 };
 
 function getUserInput(t) {
+    i++;
     userAnswer = t.name;
     console.log(userAnswer)
+    checkAnswer(answer, userAnswer);
 };
 
 function checkAnswer(ans1, ans2){
     if (ans1 == ans2){
         quizResponse.textContent = "you are correct!";
-        correctAnswers++
+        correctAnswers++;
     } else {
         quizResponse.textContent = "sorry that is wrong you lose 5 seconds";
         totalSeconds -= 5;
-        wrongAnswers++
+        wrongAnswers++;
     }
+}
+
+function startQuiz() {
+    
 }
 
 function playTimer() {
     totalSeconds = 60;
+    startTimer();
+
 
     //create buttons for quiz answer options
     sectionTitle.innerHTML = "<h1>This is a Question</h1>"
@@ -139,13 +137,20 @@ function playTimer() {
     + "<button class=\"answer\" id=\"opt3\" name = \"3\" onclick=\"getUserInput(this)\"></button></br>"
     + "<button class=\"answer\" id=\"opt4\" name = \"4\" onclick=\"getUserInput(this)\"></button></br></div>"
 
+    //button variables
     button1 = document.querySelector("#opt1");
     button2 = document.querySelector("#opt2");
     button3 = document.querySelector("#opt3");
     button4 = document.querySelector("#opt4");
 
-    startTimer();
-}
+    //startQuiz();
+    //start quiz
+
+             if(clickFlag === false){
+                answer = setQuestion(i);
+                console.log("(2) i is currently " + i);
+             };
+};
 
 function endQuiz(){
     sectionTitle.textContent = "";
