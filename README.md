@@ -1,2 +1,2 @@
-# My-Quiz
+# MyQuiz
 Javasctipt timed quiz
