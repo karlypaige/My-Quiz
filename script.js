@@ -51,6 +51,7 @@ var userAnswer;
 var i = 0;
 var correctAnswers = 0;
 var wrongAnswers = 0;
+var scoreObj = [];
 
 //button variables
 var button1;
@@ -86,20 +87,16 @@ function startTimer() {
 };
 
 function setQuestion(loopNum){
-    console.log("we are here");
+
     sectionTitle.textContent = Object.keys(questions)[loopNum];
-    console.log("we are here " + Object.keys(questions)[loopNum]);
+    
     // console.log("button1 = " + button1.textContent)
     button1.textContent = Object.values(questions)[loopNum][0];
     button2.textContent = Object.values(questions)[loopNum][1];
     button3.textContent = Object.values(questions)[loopNum][2];
     button4.textContent = Object.values(questions)[loopNum][3];
 
-    clickFlag = true;
-    //store correct answer
-    console.log("we are here " + Object.values(questions)[loopNum][4]);
-    console.log("we are here " + loopNum);
-    console.log("we are here " + button2.textContent);
+    //return correct answer
     return Object.values(questions)[loopNum][4];
 };
 
@@ -121,7 +118,6 @@ function checkAnswer(ans1, ans2){
         wrongAnswers++;
     }
 }
-
 function startQuiz() {
     answer = setQuestion(i);
     console.log("(2) i is currently " + i);
@@ -149,11 +145,31 @@ function playTimer() {
     //start quiz
 };
 
-function endQuiz(){
-    sectionTitle.textContent = "";
-    quizBody.innerHTML = "<h1>the quiz has ended</h1><p>You got " + correctAnswers + " answers correct and " + wrongAnswers + " answers wrong </p>";
-    quizResponse.textContent = "";
+function storeScore() {
+    document.querySelector("#toStore").addEventListener('keypress', function(e){
+        if (e.key === 'Enter'){
+            var newValue = {name: quizBody.children[3].value , score : correctAnswers};
+            scoreObj.push(newValue);
+            localStorage.setItem("quizScores", JSON.stringify(scoreObj));
+        };
+    });
 }
 
-startButton.addEventListener("click", playTimer);
+function displayScore() {
+    if (localStorage.getItem("quizScores")) {
+        console.log("retrieve local storage");
+    }
+}
 
+function endQuiz(){
+    sectionTitle.textContent = "";
+    quizBody.innerHTML = "<h1>the quiz has ended</h1><p>You got " + correctAnswers + " answers correct and " + wrongAnswers + " answers wrong </p>"
+    + "<label>Name </label><input type=\"text\" id=\"toStore\" value=\"enter your name here\">";
+    quizResponse.textContent = "";
+    
+    storeScore();
+    
+    displayScore();
+};
+
+startButton.addEventListener("click", playTimer);
