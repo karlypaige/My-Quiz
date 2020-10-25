@@ -47,7 +47,6 @@ var timerInterval;
 var timerFlag = false;
 var clickFlag = false;
 var answer;
-var userAnswer;
 var i = 0;
 var correctAnswers = 0;
 var wrongAnswers = 0;
@@ -85,20 +84,75 @@ function startTimer() {
 
     //start quiz
     if(timerFlag == true){      //if timer is still running
-        //for(var i=0; i<Object.keys(questions).length; i++) {
-            answer = setQuestion(0);
-            if (userAnswer){
-            console.log("answer is " + answer + " and userAnswer is " + userAnswer);
-            checkAnswer(answer, userAnswer);
+        do{
+            if (clickFlag == false){
+                console.log("clickFlag 1: " + clickFlag);
+                checkAnswer(getAnswer(), getButton());
+                console.log("clickFlag 2: " + clickFlag);
+                i++;
             }
-        //}
+        } while (i<Object.keys(questions).length);
     }
     else {
         endQuiz();
     };
 };
 
+function getAnswer() {
+    if(timerFlag){      //if there are still questions left in the questions object
+        answer = setQuestion(i);                             //get next question/answer
+    }
+    else {
+        endQuiz();
+    };
+};
 
+function getButton() {
+    console.log("you are in getButton");
+    //var userAnswer = 0;
+    clickFlag = false;
+
+    // function checkFlag() {
+    //     if(clickFlag == true){
+    //         // clickFlag = false;
+    //         i++;
+    //         console.log("userAnswer is " + userAnswer);
+    //         return userAnswer;
+    //     }
+    // };
+
+    // button1.addEventListener("click", function(){clickFlag = true; userAnswer = 1; checkFlag();});
+    // button2.addEventListener("click", function(){clickFlag = true; userAnswer = 2; checkFlag();});
+    // button3.addEventListener("click", function(){clickFlag = true; userAnswer = 3; checkFlag();});
+    // button4.addEventListener("click", function(){clickFlag = true; userAnswer = 4; checkFlag();});
+
+    //TRY MAKING IT AN OBJECT...
+    var thisObject = {
+        userAnswer: 0,
+        thisFunction: function(){
+            button1.onclick = function() {
+                userAnswer = 1; clickFlag = true;
+            }
+            button2.onclick = function() {
+                userAnswer = 2; clickFlag = true;
+            }
+            button3.onclick = function() {
+                userAnswer = 3; clickFlag = true;
+            }
+            button4.onclick = function() {
+                userAnswer = 4; clickFlag = true;
+            }
+        }
+    }   
+
+    if(clickFlag == true){
+        clickFlag = false;
+        i++;
+        console.log("userAnswer is " + userAnswer);
+        return userAnswer;
+    }
+
+};
 
 function setQuestion(loopNum){
     sectionTitle.textContent = Object.keys(questions)[loopNum];
@@ -111,11 +165,6 @@ function setQuestion(loopNum){
 
     //store correct answer
     return Object.values(questions)[loopNum][4];
-};
-
-function getUserInput(t) {
-    userAnswer = t.name;
-    console.log(userAnswer)
 };
 
 function checkAnswer(ans1, ans2){
@@ -134,10 +183,10 @@ function playTimer() {
 
     //create buttons for quiz answer options
     sectionTitle.innerHTML = "<h1>This is a Question</h1>"
-    quizBody.innerHTML = "<div class=\"row\"><button class=\"answer\" id=\"opt1\" name = \"1\" onclick=\"getUserInput(this)\"></button></br>"
-    + "<button class=\"answer\" id=\"opt2\" name = \"2\" onclick=\"getUserInput(this)\"></button></br>"
-    + "<button class=\"answer\" id=\"opt3\" name = \"3\" onclick=\"getUserInput(this)\"></button></br>"
-    + "<button class=\"answer\" id=\"opt4\" name = \"4\" onclick=\"getUserInput(this)\"></button></br></div>"
+    quizBody.innerHTML = "<button class=\"answer\" id=\"opt1\">Option 1</button></br>"
+    + "<button class=\"answer\" id=\"opt2\">Option 2</button></br>"
+    + "<button class=\"answer\" id=\"opt3\">Option 3</button></br>"
+    + "<button class=\"answer\" id=\"opt4\">Option 4</button></br>"
 
     button1 = document.querySelector("#opt1");
     button2 = document.querySelector("#opt2");
