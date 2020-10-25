@@ -108,6 +108,7 @@ function getUserInput(t) {
     userAnswer = t.name;
     console.log(userAnswer)
     checkAnswer(answer, userAnswer);
+    startQuiz();
 };
 
 function checkAnswer(ans1, ans2){
@@ -122,7 +123,8 @@ function checkAnswer(ans1, ans2){
 }
 
 function startQuiz() {
-    
+    answer = setQuestion(i);
+    console.log("(2) i is currently " + i);
 }
 
 function playTimer() {
@@ -143,13 +145,8 @@ function playTimer() {
     button3 = document.querySelector("#opt3");
     button4 = document.querySelector("#opt4");
 
-    //startQuiz();
+    startQuiz();
     //start quiz
-
-             if(clickFlag === false){
-                answer = setQuestion(i);
-                console.log("(2) i is currently " + i);
-             };
 };
 
 function endQuiz(){
