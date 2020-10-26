@@ -52,6 +52,7 @@ var i = 0;
 var correctAnswers = 0;
 var wrongAnswers = 0;
 var scoreObj = [];
+var myObj;
 
 //button variables
 var button1;
@@ -148,28 +149,56 @@ function playTimer() {
 function storeScore() {
     document.querySelector("#toStore").addEventListener('keypress', function(e){
         if (e.key === 'Enter'){
+
+            //check for stored values place them in a variable
+            if (localStorage.getItem("quizScores").length) {
+                scoreObj = JSON.parse(localStorage.getItem("quizScores"));
+            };
+
+            //add new scores
             var newValue = {name: quizBody.children[3].value , score : correctAnswers};
             scoreObj.push(newValue);
+
+            //sort the object as scores are entered
+            scoreObj.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name < b.name) ? 1 : -1) : -1 )
+
+            //if there are 6 items remove the last (only strore 5 items)
+            if (scoreObj.length > 5) {
+                scoreObj.pop();
+            }
+            
             localStorage.setItem("quizScores", JSON.stringify(scoreObj));
+            displayScore();
         };
     });
+
+    
 }
 
 function displayScore() {
     if (localStorage.getItem("quizScores")) {
-        console.log("retrieve local storage");
+        myObj = JSON.parse(localStorage.getItem("quizScores"));
+        
+        
+        sectionTitle.innerHTML = "<h1>Top 5 Scores</h1>";
+        quizBody.innerHTML ="";
+        
+        
+        for (var i=0; i<myObj.length; i++) {
+            quizBody.innerHTML += "<p>Name: " + myObj[i].name + " Score: " + myObj[i].score + "</p>";
+        }
+
+        quizResponse.textContent = "";
     }
 }
 
 function endQuiz(){
     sectionTitle.textContent = "";
     quizBody.innerHTML = "<h1>the quiz has ended</h1><p>You got " + correctAnswers + " answers correct and " + wrongAnswers + " answers wrong </p>"
-    + "<label>Name </label><input type=\"text\" id=\"toStore\" value=\"enter your name here\">";
+    + "<label>Name:&ensp; </label><input type=\"text\" id=\"toStore\" value=\"enter your name here\">";
     quizResponse.textContent = "";
     
     storeScore();
-    
-    displayScore();
 };
 
 startButton.addEventListener("click", playTimer);
