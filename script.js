@@ -1,6 +1,5 @@
-
 //for access to sections
-var sectionHeader = document.querySelector("#timer");
+var sectionTimer = document.querySelector("#timer");
 var sectionTitle = document.querySelector("#sectionTitle");
 var quizBody = document.querySelector("#quizBody");
 var quizResponse = document.querySelector("#response");
@@ -82,7 +81,7 @@ function startTimer() {
     };
 
     //display time left
-    sectionHeader.innerHTML = totalSeconds;
+    sectionTimer.innerHTML = totalSeconds;
 
     }, 1000);
 };
@@ -149,24 +148,27 @@ function playTimer() {
 function storeScore() {
     document.querySelector("#toStore").addEventListener('keypress', function(e){
         if (e.key === 'Enter'){
-
-            //check for stored values place them in a variable
-            if (localStorage.getItem("quizScores").length) {
-                scoreObj = JSON.parse(localStorage.getItem("quizScores"));
-            };
-
-            //add new scores
             var newValue = {name: quizBody.children[3].value , score : correctAnswers};
+            
+            //check for stored values place them in a variable
+            if (localStorage.getItem("quizScores")) {
+                scoreObj = JSON.parse(localStorage.getItem("quizScores"));
+            }
+
+            //add new scores              
             scoreObj.push(newValue);
 
             //sort the object as scores are entered
-            scoreObj.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name < b.name) ? 1 : -1) : -1 )
+            if(scoreObj.length > 1) {
+                scoreObj.sort((a, b) => (a.score < b.score) ? 1 : (a.score === b.score) ? ((a.name < b.name) ? 1 : -1) : -1 )
+            }
 
             //if there are 6 items remove the last (only strore 5 items)
             if (scoreObj.length > 5) {
                 scoreObj.pop();
-            }
-            
+            };
+            console.log("just before storing " + scoreObj);
+
             localStorage.setItem("quizScores", JSON.stringify(scoreObj));
             displayScore();
         };
@@ -178,7 +180,6 @@ function storeScore() {
 function displayScore() {
     if (localStorage.getItem("quizScores")) {
         myObj = JSON.parse(localStorage.getItem("quizScores"));
-        
         
         sectionTitle.innerHTML = "<h1>Top 5 Scores</h1>";
         quizBody.innerHTML ="";
@@ -195,7 +196,7 @@ function displayScore() {
 function endQuiz(){
     sectionTitle.textContent = "";
     quizBody.innerHTML = "<h1>the quiz has ended</h1><p>You got " + correctAnswers + " answers correct and " + wrongAnswers + " answers wrong </p>"
-    + "<label>Name:&ensp; </label><input type=\"text\" id=\"toStore\" value=\"enter your name here\">";
+    + "<label>Name:&ensp; </label><input type=\"text\" id=\"toStore\" value=\"\"  placeholder = \"enter your name here\">";
     quizResponse.textContent = "";
     
     storeScore();
